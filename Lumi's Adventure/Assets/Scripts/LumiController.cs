@@ -24,7 +24,6 @@ public class LumiController : MonoBehaviour
     [Header("Power Ups - Estados")]
     public bool isInvincible = false;
 
-    // Referencia visual (opcional) para la línea de la Luna
     private LineRenderer moonGuideLine;
 
     void Start()
@@ -32,7 +31,6 @@ public class LumiController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         currentHealth = maxHealth;
 
-        // Configuración inicial de LineRenderer (Si tienes el componente)
         moonGuideLine = GetComponent<LineRenderer>();
         if (moonGuideLine) moonGuideLine.enabled = false;
     }

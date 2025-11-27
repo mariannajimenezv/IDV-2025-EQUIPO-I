@@ -12,6 +12,11 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
+# OS generated files
+.DS_Store
+.DS_Store?
+Thumbs.db
+
 # By default unity supports Blender asset imports, *.blend1 blender files do not need to be commited to version control.
 *.blend1
 *.blend1.meta
@@ -43,6 +48,7 @@ ExportedObj/
 *.csproj
 *.unityproj
 *.sln
+*.slnx
 *.suo
 *.tmp
 *.user
@@ -97,3 +103,6 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Editor config
+.editorconfig

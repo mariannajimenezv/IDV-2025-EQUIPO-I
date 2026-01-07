@@ -51,7 +51,7 @@ public class InputHandler : MonoBehaviour
 
     void HandleUndo()
     {
-        // Tecla Z para deshacer acciones (prueba del sistema)
+        // tecla Z para deshacer acciones (prueba del sistema)
         if (Input.GetKeyDown(KeyCode.Z))
         {
             manager.UndoLastCommand();

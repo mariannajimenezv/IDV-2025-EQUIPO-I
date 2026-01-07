@@ -16,7 +16,7 @@ public class CommandJump : ICommand
 
     public void Undo()
     {
-        // Deshacer un salto es complejo, por ahora lo dejamos vacío
+        
     }
 
 }

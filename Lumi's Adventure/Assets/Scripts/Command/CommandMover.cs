@@ -5,7 +5,6 @@ public class CommandMover : ICommand
     private LumiController _lumi;
     private Vector3 _direction;
 
-    // Constructor: Recibe quién se mueve y hacia dónde
     public CommandMover(LumiController lumi, Vector3 direction)
     {
         _lumi = lumi;
@@ -19,7 +18,7 @@ public class CommandMover : ICommand
 
     public void Undo()
     {
-        // Moverse en la dirección opuesta
+        // mover direcc contraria
         _lumi.Move(-_direction);
     }
 }

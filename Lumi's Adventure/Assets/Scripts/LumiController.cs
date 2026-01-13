@@ -15,11 +15,11 @@ public class LumiController : MonoBehaviour
     private bool isGrounded;
     private float currentSpeed;
 
-    [Header("Estado del juego")]
-    public int lives = 10;
+    [Header("Estado del juego")]    // Patron observer
+    public int lives = 10;  
     public int fragments = 0;
 
-    // Guardamos los suscriptores 
+    // Guardamos los suscriptores - del patron observer
     private List<ILumiObserver> observers = new List<ILumiObserver>();
 
     [Header("Combate y Vida")]
@@ -53,7 +53,7 @@ public class LumiController : MonoBehaviour
         NotifyObservers("life", currentHealth);     // notifica a los observers el estado inicial
     }
 
-    void Update()
+    void Update()   //patron observer
     {
         NotifyObservers("life", currentHealth);     // notifica a los observers el estado inicial
     }

@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour, ILumiObserver
     [Header("Configuracion del Nivel")]
     public int totalFragments = 10;
     public int currentFragments = 0;
+
     public GameObject exitDoor;
 
     private void Awake()
@@ -26,7 +27,7 @@ public class GameManager : MonoBehaviour, ILumiObserver
 
         if(lumi != null)
         {
-            lumi.AddObserver(this);
+            lumi.AddObserver(this); // patron observer
         }
         else
         {
@@ -36,7 +37,10 @@ public class GameManager : MonoBehaviour, ILumiObserver
 
     private void OnDestroy()
     {
-        if (lumi != null) lumi.RemoveObserver(this);
+        if (lumi != null)
+        {
+            lumi.RemoveObserver(this); // patron observer
+        }
     }
 
     public void OnFragmentCount(int value)

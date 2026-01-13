@@ -16,7 +16,7 @@ public class HUDController : MonoBehaviour, ILumiObserver
     {
         if(lumi != null)
         {
-            lumi.AddObserver(this);
+            lumi.AddObserver(this); // patron observer
 
             // estados iniciales de Lumi
             OnLifeChange(lumi.currentHealth);
@@ -26,7 +26,7 @@ public class HUDController : MonoBehaviour, ILumiObserver
 
     void OnDestroy()
     {
-        if (lumi != null) lumi.RemoveObserver(this);
+        if (lumi != null) lumi.RemoveObserver(this);    // patron observer
     }
 
     public void OnLifeChange(int value)

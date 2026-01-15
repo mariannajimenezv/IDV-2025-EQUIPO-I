@@ -4,17 +4,20 @@ using UnityEngine.SceneManagement;
 public class MainMenuState : AMenuState
 {
     private readonly GameObject panel;
+    private readonly GameObject background;
 
     public MainMenuState(IMenu menu) : base(menu)
     {
         this.menu = menu; 
         panel = menu.GetPanel("MainMenuState");
+        background = menu.GetPanel("MainMenuBg");
     }
 
 
     public override void Enter()
     {
         if (panel != null) panel.SetActive(true);
+        if (background != null) background.SetActive(true);
         Debug.Log("Entering Main Menu");
     }
 

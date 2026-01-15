@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour, IMenu
 {
     public static MenuManager Instance { get; private set; }
-    private IState lastState;
     private AMenuState currentState;
 
     private Dictionary<string, GameObject> panels;
@@ -15,6 +14,7 @@ public class MenuManager : MonoBehaviour, IMenu
         Instance = this;
         if (panels == null) panels = new Dictionary<string, GameObject>();
         else panels.Clear();
+        
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);
@@ -52,7 +52,6 @@ public class MenuManager : MonoBehaviour, IMenu
                 currentState.Exit();    
             }
             
-            // Set current state and enter
             currentState = (AMenuState)newState;
             currentState.Enter();
     }

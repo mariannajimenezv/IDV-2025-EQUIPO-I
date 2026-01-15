@@ -26,7 +26,7 @@ public class GameState : AMenuState
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-             menu.SetState(new PauseState(menu));
+            menu.SetState(new PauseState(menu));
         }
     }
 

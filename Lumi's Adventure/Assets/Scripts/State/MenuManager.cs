@@ -77,6 +77,8 @@ public class MenuManager : MonoBehaviour, IMenu
     public void OnSettings() => currentState.OnSettings();
     public void OnCredits() => currentState.OnCredits();
 
+    public void OnMainMenu() => currentState.OnMainMenu();
+
     private void OnDestroy()
     {
         if (Instance == this)

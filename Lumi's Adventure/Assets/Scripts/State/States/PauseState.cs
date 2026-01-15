@@ -35,4 +35,14 @@ public class PauseState : AMenuState
         
     }
 
+    public override void OnBack()
+    {
+        menu.SetState(new GameState(menu));
+    }
+
+    public override void OnMainMenu()
+    {
+        menu.SetState(new MainMenuState(menu));
+    }
+
 }

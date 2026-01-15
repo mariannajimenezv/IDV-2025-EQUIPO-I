@@ -13,6 +13,7 @@ public abstract class AMenuState : IState
     public virtual void OnPlay() {}
     public virtual void OnSettings() {}
     public virtual void OnCredits() {}
+    public virtual void OnMainMenu() {}
     public virtual void OnBack() {}
     
 }

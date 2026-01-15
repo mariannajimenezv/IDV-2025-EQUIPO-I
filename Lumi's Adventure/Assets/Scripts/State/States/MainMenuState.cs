@@ -5,12 +5,14 @@ public class MainMenuState : AMenuState
 {
     private readonly GameObject panel;
     private readonly GameObject background;
+    private readonly GameObject brightness;
 
     public MainMenuState(IMenu menu) : base(menu)
     {
         this.menu = menu; 
         panel = menu.GetPanel("MainMenuState");
         background = menu.GetPanel("MainMenuBg");
+        brightness = menu.GetPanel("Brightness");
     }
 
 
@@ -18,6 +20,7 @@ public class MainMenuState : AMenuState
     {
         if (panel != null) panel.SetActive(true);
         if (background != null) background.SetActive(true);
+         if (brightness != null) brightness.SetActive(true);
         Debug.Log("Entering Main Menu");
     }
 

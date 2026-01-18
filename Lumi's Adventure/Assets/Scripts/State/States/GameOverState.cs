@@ -1,35 +1,34 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseState : AMenuState
+public class GameOverState : AMenuState
 {
     private readonly GameObject panel;
-    public PauseState(IMenu menu) : base(menu)
+
+    public GameOverState(IMenu menu): base(menu)
     {
-        this.menu = menu;
-        panel = menu.GetPanel("PauseState");
+        this.menu = menu; 
+        panel = menu.GetPanel("GameOverState");
     }
 
     public override void Enter()
     {
         if (panel != null) panel.SetActive(true);
         Time.timeScale = 0; 
+
+        // Opcional
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public override void Exit()
     {
-        if (panel != null)
-        {
-            panel.SetActive(false);
-        }
+        if (panel != null) panel.SetActive(false);
     }
 
     public override void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            menu.SetState(new GameState(menu));
-        }
+
     }
 
     public override void FixedUpdate()
@@ -39,14 +38,13 @@ public class PauseState : AMenuState
 
     public override void OnBack()
     {
-        Time.timeScale = 1; 
-        menu.SetState(new GameState(menu));
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Game");
     }
 
     public override void OnMainMenu()
     {
-        Time.timeScale = 1; 
+        Time.timeScale = 1;
         SceneManager.LoadScene("Menu");
     }
-
 }

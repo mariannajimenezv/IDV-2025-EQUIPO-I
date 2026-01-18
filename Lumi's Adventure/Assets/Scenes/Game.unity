@@ -1264,6 +1264,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3428816504746291356, guid: 373f2edbac1e67841ad958e45c9bd620, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3545816966075651696, guid: 373f2edbac1e67841ad958e45c9bd620, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

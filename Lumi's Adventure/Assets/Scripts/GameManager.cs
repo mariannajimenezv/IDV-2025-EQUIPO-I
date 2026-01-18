@@ -80,12 +80,19 @@ public class GameManager : MonoBehaviour, ILumiObserver
     public void GameOver()
     {
         Debug.Log("GAME OVER");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (MenuManager.Instance != null)
+        {
+            MenuManager.Instance.SetState(new GameOverState(MenuManager.Instance));
+        }
     }
 
     public void WinLevel()
     {
         Debug.Log("NIVEL COMPLETADO!!");
         // siguiente nivel (en la entrega pone que con uno vale)
+        if (MenuManager.Instance != null)
+        {
+            MenuManager.Instance.SetState(new VictoryState(MenuManager.Instance));
+        }
     }
 }

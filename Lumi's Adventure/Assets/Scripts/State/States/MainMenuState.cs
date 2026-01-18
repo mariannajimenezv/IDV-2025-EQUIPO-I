@@ -50,11 +50,6 @@ public class MainMenuState : AMenuState
         menu.SetState(new CreditsState(menu));
     }
 
-    public override void OnSettings()
-    {
-        menu.SetState(new SettingsMenuState(menu));
-    }
-
     public override void OnBack()
     {
         Debug.Log("Quitting game");

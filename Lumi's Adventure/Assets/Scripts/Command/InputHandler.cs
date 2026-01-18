@@ -10,6 +10,7 @@ public class InputHandler : MonoBehaviour
     {
         HandleMovement();
         HandleCombat();
+        HandleJump();
         HandleUndo();
     }
 

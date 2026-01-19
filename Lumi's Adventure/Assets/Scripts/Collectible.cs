@@ -7,6 +7,22 @@ public class Collectible : MonoBehaviour
 
     [Header("Solo para Corazones")]
     public int healAmount = 2;
+    private Vector3 startPos;
+
+    private void Start()
+    {
+        startPos = transform.position;
+    }
+
+    private void Update()
+    {
+        // Vertical bobbing (sine wave)
+        float newY = startPos.y + Mathf.Sin(Time.time * 2f) * 0.1f;
+        transform.position = new Vector3(startPos.x, newY, startPos.z);
+
+        // Constant rotation
+        transform.Rotate(Vector3.up, 50f * Time.deltaTime, Space.World);
+    }
 
     private void OnTriggerEnter(Collider other)
     {

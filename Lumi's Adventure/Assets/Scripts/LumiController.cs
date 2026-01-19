@@ -22,7 +22,6 @@ public class LumiController : MonoBehaviour
     [Header("Estado del Juego")]
     public int maxHealth = 10;
     public int currentHealth;
-    public int fragments = 0;
 
     // Lista de observadores (Patr�n Observer)
     private List<ILumiObserver> observers = new List<ILumiObserver>();

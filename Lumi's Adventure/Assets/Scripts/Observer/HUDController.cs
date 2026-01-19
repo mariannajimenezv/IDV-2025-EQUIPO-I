@@ -24,7 +24,7 @@ public class HUDController : MonoBehaviour, ILumiObserver
 
             // estados iniciales de Lumi
             OnLifeChange(lumi.currentHealth);
-            OnFragmentCount(lumi.fragments);
+            OnFragmentCount(0);
         }
     }
 

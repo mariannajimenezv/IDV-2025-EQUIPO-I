@@ -8,6 +8,7 @@ public class LumiController : MonoBehaviour
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
     public float jumpForce = 7f;
+    public float gravityMultiplier = 2.5f; 
 
     [Header("Físicas y Referencias")]
     public LayerMask groundLayer;
@@ -57,6 +58,21 @@ public class LumiController : MonoBehaviour
         NotifyObservers("Life", currentHealth);
     }
 
+    private void Update()
+    {
+        // 1. Detectar suelo constantemente (haya input o no)
+        if (groundCheck != null)
+        {
+            isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundLayer);
+        }
+
+        // 2. Enviar el dato al Animator para cortar el salto al aterrizar
+        if (anim != null)
+        {
+            anim.SetBool("IsGrounded", isGrounded);
+        }
+    }
+
     // --- MÉTODOS DEL COMMAND PATTERN (PÚBLICOS) ---
 
     public void Move(Vector3 direction)
@@ -72,7 +88,6 @@ public class LumiController : MonoBehaviour
         // 2. Control Físico (Rigidbody)
         if (direction.magnitude >= 0.1f)
         {
-            Debug.Log($"Moviendo. Dir: {direction} | Velocidad: {currentSpeed} | Resultado: {direction * currentSpeed}");
             // Calcular dirección y velocidad
             Vector3 moveDir = direction * currentSpeed;
 
@@ -91,7 +106,7 @@ public class LumiController : MonoBehaviour
 
     public void Jump()
     {
-        // Detectar si tocamos suelo
+        // Detectar si tocamos suelo 
         if (groundCheck != null)
         {
             isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundLayer);
@@ -99,11 +114,14 @@ public class LumiController : MonoBehaviour
 
         if (isGrounded)
         {
-            // Impulso hacia arriba
+            // 1. Impulso fisico
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-            // Si tuvieras animación de salto:
-            // if(anim != null) anim.SetTrigger("Jump");
+            //Activar animación
+            if (anim != null)
+            {
+                anim.SetTrigger("Jump");
+            }
         }
     }
 

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public class LumiController : MonoBehaviour
 {
-    [Header("Configuración de Movimiento")]
+    [Header("Configuraciï¿½n de Movimiento")]
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
     public float jumpForce = 7f;
 
-    [Header("Físicas y Referencias")]
+    [Header("Fï¿½sicas y Referencias")]
     public LayerMask groundLayer;
     public Transform groundCheck;
 
@@ -23,7 +23,7 @@ public class LumiController : MonoBehaviour
     public int currentHealth;
     public int fragments = 0;
 
-    // Lista de observadores (Patrón Observer)
+    // Lista de observadores (Patrï¿½n Observer)
     private List<ILumiObserver> observers = new List<ILumiObserver>();
 
     [Header("Combate")]
@@ -40,7 +40,7 @@ public class LumiController : MonoBehaviour
         // 1. Obtener Rigidbody
         rb = GetComponent<Rigidbody>();
 
-        // 2. Obtener Animator (Buscamos en hijos por si el modelo 3D está dentro)
+        // 2. Obtener Animator (Buscamos en hijos por si el modelo 3D estï¿½ dentro)
         anim = GetComponent<Animator>();
         if (anim == null) anim = GetComponentInChildren<Animator>();
     }
@@ -50,14 +50,14 @@ public class LumiController : MonoBehaviour
         currentHealth = maxHealth;
         currentSpeed = walkSpeed; // IMPORTANTE: Inicializar velocidad para que no sea 0
 
-        // Configuración visual de la guía (Luna)
+        // Configuraciï¿½n visual de la guï¿½a (Luna)
         moonGuideLine = GetComponent<LineRenderer>();
         if (moonGuideLine) moonGuideLine.enabled = false;
 
         NotifyObservers("Life", currentHealth);
     }
 
-    // --- MÉTODOS DEL COMMAND PATTERN (PÚBLICOS) ---
+    // --- Mï¿½TODOS DEL COMMAND PATTERN (Pï¿½BLICOS) ---
 
     public void Move(Vector3 direction)
     {
@@ -65,15 +65,15 @@ public class LumiController : MonoBehaviour
         if (anim != null)
         {
             // Si hay movimiento (magnitud > 0), pasamos el valor al Animator
-            // Esto hará la transición de Idle -> Run
+            // Esto harï¿½ la transiciï¿½n de Idle -> Run
             anim.SetFloat("Speed", direction.magnitude);
         }
 
-        // 2. Control Físico (Rigidbody)
+        // 2. Control Fï¿½sico (Rigidbody)
         if (direction.magnitude >= 0.1f)
         {
             Debug.Log($"Moviendo. Dir: {direction} | Velocidad: {currentSpeed} | Resultado: {direction * currentSpeed}");
-            // Calcular dirección y velocidad
+            // Calcular direcciï¿½n y velocidad
             Vector3 moveDir = direction * currentSpeed;
 
             // Unity 6: Usamos linearVelocity
@@ -102,7 +102,7 @@ public class LumiController : MonoBehaviour
             // Impulso hacia arriba
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-            // Si tuvieras animación de salto:
+            // Si tuvieras animaciï¿½n de salto:
             // if(anim != null) anim.SetTrigger("Jump");
         }
     }
@@ -111,29 +111,32 @@ public class LumiController : MonoBehaviour
     {
         Debug.Log("Lumi ejecuta ataque");
 
-        // 1. Activar Animación
+        // 1. Activar Animaciï¿½n
         if (anim != null)
         {
             anim.SetTrigger("Attack");
         }
 
-        // 2. Lógica de Daño (Hitbox)
+        // 2. Lï¿½gica de Daï¿½o (Hitbox)
         if (attackPoint != null)
         {
             Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
 
             foreach (Collider enemy in hitEnemies)
             {
-                // Evitamos que Lumi se golpee a sí misma
+                // Evitamos que Lumi se golpee a sï¿½ misma
                 if (enemy.gameObject == gameObject) continue;
 
                 Debug.Log("Lumi golpea a: " + enemy.name);
                 Destroy(enemy.gameObject);
+
+                //SI LE VAN A AGREGAR SONIDO
+                //ServiceLocator.Get<IAudioService>().PlaySound("LumiHit");
             }
         }
     }
 
-    // --- LÓGICA DE JUEGO (DAÑO, CURACIÓN, POWERUPS) ---
+    // --- Lï¿½GICA DE JUEGO (DAï¿½O, CURACIï¿½N, POWERUPS) ---
 
     public void TakeDamage(int damage)
     {
@@ -146,6 +149,10 @@ public class LumiController : MonoBehaviour
         {
             GameManager.Instance.GameOver();
         }
+
+        //SI LE VAN A AGREGAR SONIDO
+        //ServiceLocator.Get<IAudioService>().PlaySound("LumiHit");
+
     }
 
     public void Heal(int amount)
@@ -153,12 +160,18 @@ public class LumiController : MonoBehaviour
         currentHealth += amount;
         if (currentHealth > maxHealth) currentHealth = maxHealth;
         NotifyObservers("Life", currentHealth);
+        //SI LE VAN A AGREGAR SONIDO
+        //ServiceLocator.Get<IAudioService>().PlaySound("LumiHit");
+
     }
 
     public void CollectFragment()
     {
-        fragments++;
-        NotifyObservers("Fragment", fragments);
+        ServiceLocator.Get<IScoreService>().AddPoints();
+        NotifyObservers("Fragment", ServiceLocator.Get<IScoreService>().CurrentScore);
+        //SI LE VAN A AGREGAR SONIDO
+        //ServiceLocator.Get<IAudioService>().PlaySound("LumiHit");
+
     }
 
     // --- POWER UPS ---
@@ -166,19 +179,70 @@ public class LumiController : MonoBehaviour
     public void CollectPowerUp(string type)
     {
         NotifyObservers("PowerUp", 0, type);
+
+        //SI LE VAN A AGREGAR SONIDO
+        //ServiceLocator.Get<IAudioService>().PlaySound("LumiHit");
+
         if (type == "Star") StartCoroutine(ActivateInvincibility(5f));
+        else if (type == "Moon" && moonGuideLine != null)
+        {
+            moonGuideLine.enabled = true;
+            StartCoroutine(ActivateStarGuidance(10f));
+        }
+        else if (type == "Sun")
+        {
+            // Ejemplo: Aumentar velocidad temporalmente
+            StartCoroutine(SpeedBoost(5f, 10f));
+        }
     }
 
     public IEnumerator ActivateInvincibility(float duration)
     {
         isInvincible = true;
-        Debug.Log("¡Lumi Invencible!");
+        Debug.Log("ï¿½Lumi Invencible!");
         yield return new WaitForSeconds(duration);
         isInvincible = false;
         Debug.Log("Fin Invencibilidad");
     }
 
-    // --- PATRÓN OBSERVER ---
+    public IEnumerator SpeedBoost(float duration, float boostedSpeed)
+    {
+        currentSpeed = boostedSpeed;
+        yield return new WaitForSeconds(duration);
+        currentSpeed = walkSpeed;
+    }
+
+    private IEnumerator ActivateStarGuidance(float duration)
+    {
+        moonGuideLine.enabled = true;
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            Transform nearest = ServiceLocator
+                .Get<IFragmentService>()
+                .GetNearestFragment(transform.position);
+
+            if (nearest)
+            {
+                moonGuideLine.SetPosition(0, transform.position);
+                moonGuideLine.SetPosition(1, nearest.position);
+            }
+            else
+            {
+                moonGuideLine.enabled = false;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        moonGuideLine.enabled = false;
+    }
+
+
+    // --- PATRï¿½N OBSERVER ---
 
     public void AddObserver(ILumiObserver observer)
     {

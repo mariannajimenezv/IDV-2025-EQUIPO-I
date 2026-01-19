@@ -2,32 +2,15 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour, IScoreService
 {
-    public int winScore = 10;
-    private int score = 0;
+    public int CurrentScore { get; private set; }
 
     private void Awake()
     {
         ServiceLocator.Register<IScoreService>(this);
     }
 
-    public void AddPoint()
+    public void AddPoints()
     {
-        score++;
-        Debug.Log($"Score: {score}/{winScore}");
-
-        if (HasWon())
-        {
-            GameManager.Instance.WinLevel();
-        }
-    }
-
-    public int GetScore()
-    {
-        return score;
-    }
-
-    public bool HasWon()
-    {
-        return score >= winScore;
+        CurrentScore++;
     }
 }

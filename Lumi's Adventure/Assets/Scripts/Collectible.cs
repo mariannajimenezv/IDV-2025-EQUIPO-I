@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
-    public enum Type { Fragment, Heart, Exit }
+    public enum Type { Fragment, Heart, Exit, Sun, Moon, Star }
     public Type objectType;
 
     [Header("Solo para Corazones")]
@@ -29,6 +29,11 @@ public class Collectible : MonoBehaviour
                 else if (objectType == Type.Exit)
                 {
                     GameManager.Instance.WinLevel();
+                }
+                else if (objectType == Type.Sun || objectType == Type.Moon || objectType == Type.Star)
+                {
+                    lumi.CollectPowerUp(objectType.ToString());
+                    Destroy(gameObject);
                 }
             }
         }

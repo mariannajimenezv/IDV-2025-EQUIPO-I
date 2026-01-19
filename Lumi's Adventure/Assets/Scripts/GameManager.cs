@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour, ILumiObserver
     public int currentFragments = 0;
 
     public GameObject exitDoor;
+    public Transform[] fragSpawnPoints;
+    public Transform[] powerSpawnPoints;
 
     private void Awake()
     {
@@ -33,7 +35,31 @@ public class GameManager : MonoBehaviour, ILumiObserver
         {
             Debug.LogError("GameManager: ¡Falta asignar a Lumi en el Inspector!");
         }
+
+        StartLevel();
     }
+
+    private void StartLevel()
+    {
+        foreach (var point in fragSpawnPoints)
+        {
+            ServiceLocator
+                .Get<IItemFactory>()
+                .CreateItem("Fragment", point.position);
+            ServiceLocator
+                .Get<IFragmentService>()
+                .RegisterFragment(point);
+        }
+
+        foreach (var point in powerSpawnPoints)
+        {
+            Debug.Log($"Spawning power-up with key: '{point.name}'");
+            ServiceLocator
+                .Get<IItemFactory>()
+                .CreateItem(point.name, point.position);
+        }
+    }
+
 
     private void OnDestroy()
     {

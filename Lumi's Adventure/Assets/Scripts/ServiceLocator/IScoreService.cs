@@ -1,6 +1,5 @@
 public interface IScoreService
 {
-    void AddPoint();
-    int GetScore();
-    bool HasWon();
+    int CurrentScore { get; }
+    void AddPoints();
 }

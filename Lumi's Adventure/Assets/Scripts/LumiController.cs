@@ -15,7 +15,7 @@ public class LumiController : MonoBehaviour
     public Transform groundCheck;
 
     private Rigidbody rb;
-    private Animator anim; // Referencia para controlar las animaciones
+    private Animator anim; 
     private bool isGrounded;
     private float currentSpeed;
 
@@ -23,7 +23,7 @@ public class LumiController : MonoBehaviour
     public int maxHealth = 10;
     public int currentHealth;
 
-    // Lista de observadores (Patr�n Observer)
+    // Lista de observadores (Patron Observer)
     private List<ILumiObserver> observers = new List<ILumiObserver>();
 
     [Header("Combate")]
@@ -33,14 +33,14 @@ public class LumiController : MonoBehaviour
 
     [Header("Power Ups")]
     public bool isInvincible = false;
+    public float iFramesDuration = 1f;
     private LineRenderer moonGuideLine;
+    private Coroutine iFramesCoroutine;
 
     private void Awake()
     {
-        // 1. Obtener Rigidbody
         rb = GetComponent<Rigidbody>();
 
-        // 2. Obtener Animator (Buscamos en hijos por si el modelo 3D est� dentro)
         anim = GetComponent<Animator>();
         if (anim == null) anim = GetComponentInChildren<Animator>();
     }
@@ -48,9 +48,8 @@ public class LumiController : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        currentSpeed = walkSpeed; // IMPORTANTE: Inicializar velocidad para que no sea 0
+        currentSpeed = walkSpeed;
 
-        // Configuraci�n visual de la gu�a (Luna)
         moonGuideLine = GetComponent<LineRenderer>();
         if (moonGuideLine) moonGuideLine.enabled = false;
 
@@ -59,54 +58,43 @@ public class LumiController : MonoBehaviour
 
     private void Update()
     {
-        // 1. Detectar suelo constantemente (haya input o no)
         if (groundCheck != null)
         {
             isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundLayer);
         }
 
-        // 2. Enviar el dato al Animator para cortar el salto al aterrizar
         if (anim != null)
         {
             anim.SetBool("IsGrounded", isGrounded);
         }
     }
 
-    // --- M�TODOS DEL COMMAND PATTERN (P�BLICOS) ---
+    // --- METODOS DEL COMMAND PATTERN  ---
 
 
     public void Move(Vector3 direction)
     {
-        // 1. Control del Animator (Visual)
         if (anim != null)
         {
-            // Si hay movimiento (magnitud > 0), pasamos el valor al Animator
-            // Esto har� la transici�n de Idle -> Run
             anim.SetFloat("Speed", direction.magnitude);
         }
 
-        // 2. Control F�sico (Rigidbody)
         if (direction.magnitude >= 0.1f)
         {
-            // Calcular direcci�n y velocidad
             Vector3 moveDir = direction * currentSpeed;
 
-            // Unity 6: Usamos linearVelocity
             rb.linearVelocity = new Vector3(moveDir.x, rb.linearVelocity.y, moveDir.z);
 
-            // Rotar al personaje hacia donde va
             transform.forward = direction;
         }
         else
         {
-            // Frenar horizontalmente si no hay comando de movimiento
             rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         }
     }
 
     public void Jump()
     {
-        // Detectar si tocamos suelo 
         if (groundCheck != null)
         {
             isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundLayer);
@@ -114,10 +102,8 @@ public class LumiController : MonoBehaviour
 
         if (isGrounded)
         {
-            // 1. Impulso fisico
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-            //Activar animaci�n
             if (anim != null)
             {
                 anim.SetTrigger("Jump");
@@ -130,25 +116,21 @@ public class LumiController : MonoBehaviour
     {
         Debug.Log("Lumi ejecuta ataque");
 
-        // 1. Activar Animacion
         if (anim != null)
         {
             anim.SetTrigger("Attack");
         }
 
-        // 2. Logica de Damage (Hitbox)
         if (attackPoint != null)
         {
             Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
 
             foreach (Collider enemy in hitEnemies)
             {
-                // Evitamos que Lumi se golpee a so misma
                 if (enemy.gameObject == gameObject) continue;
 
                 Debug.Log("Lumi golpea a: " + enemy.name);
                 Destroy(enemy.gameObject);
-
 
                 ServiceLocator.Get<IAudioService>().PlaySound("Attack");
             }
@@ -159,19 +141,29 @@ public class LumiController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (isInvincible) return;
+        if (isInvincible)
+        {
+            Debug.Log("Lumi es invencible - Daño bloqueado");
+            return;
+        }
 
         currentHealth -= damage;
         NotifyObservers("Life", currentHealth);
 
         VisualFeedbackManager.Instance.ShowDamageFeedback(gameObject);    // Feedback visual (singleton)
 
+        if (iFramesCoroutine != null)
+        {
+            StopCoroutine(iFramesCoroutine);
+        }
+        iFramesCoroutine = StartCoroutine(ActivateIFrames(iFramesDuration));
+
+        ServiceLocator.Get<IAudioService>().PlaySound("Damage");    // Sonido
+
         if (currentHealth <= 0)
         {
             GameManager.Instance.GameOver();
         }
-
-        ServiceLocator.Get<IAudioService>().PlaySound("Damage");
     }
 
     public void Heal(int amount)
@@ -265,6 +257,17 @@ public class LumiController : MonoBehaviour
         moonGuideLine.enabled = false;
     }
 
+    private IEnumerator ActivateIFrames(float duration)
+    {
+        isInvincible = true;
+        Debug.Log($"i-frames activados por {duration} segundos");
+
+        yield return new WaitForSeconds(duration);
+
+        isInvincible = false;
+        Debug.Log("i-frames terminados");
+        iFramesCoroutine = null;
+    }
 
     // --- PATRON OBSERVER ---
 
@@ -280,7 +283,6 @@ public class LumiController : MonoBehaviour
 
     public void NotifyObservers(string eventType, int value = 0, string msg = "")
     {
-        // Copiamos la lista para evitar errores si se modifica durante el bucle
         foreach (ILumiObserver observer in new List<ILumiObserver>(observers))
         {
             if (eventType == "Life") observer.OnLifeChange(value);

@@ -16,12 +16,12 @@ public class GameManager : MonoBehaviour, ILumiObserver
     public Transform[] powerSpawnPoints;
 
     [Header("Portal de Salida")]
-    public GameObject portalObject; // El GameObject completo del portal
+    public GameObject portalObject; 
     public Collider portalCollider;
     public Color portalActiveColor = new Color(0f, 5f, 0f, 1f);
     public Color portalInactiveColor = new Color(0f, 0f, 0f, 1f);
 
-    private Renderer[] portalRenderers; // Array para todos los renderers (LOD0 y LOD1)
+    private Renderer[] portalRenderers;
     private bool portalUnlocked = false;
 
     private void Awake()
@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour, ILumiObserver
     {
         if (exitDoor != null) exitDoor.SetActive(false);
 
-        // Obtener TODOS los renderers del portal (incluye LOD0 y LOD1)
+
         if (portalObject != null)
         {
             portalRenderers = portalObject.GetComponentsInChildren<Renderer>();

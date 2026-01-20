@@ -24,9 +24,6 @@ public class VisualFeedbackManager : MonoBehaviour
         }
     }
 
-    // Diccionario para guardar materiales originales
-    private Dictionary<Renderer, Material> originalMaterials = new Dictionary<Renderer, Material>();
-
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -39,128 +36,98 @@ public class VisualFeedbackManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    // Activa feedback de invencibilidad en un objeto
     public void ShowInvincibilityFeedback(GameObject target, float duration)
     {
-        // Buscar renderers (importante para modelos con multiples partes)
         Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
-
-        if (renderers.Length == 0)
-        {
-            Debug.LogWarning("No se encontró ningún Renderer en " + target.name);
-            return;
-        }
-
-        Debug.Log($"Encontrados {renderers.Length} renderers en {target.name}");
+        if (renderers.Length == 0) return;
 
         ParticleSystem particles = target.GetComponentInChildren<ParticleSystem>();
-
         StartCoroutine(InvincibilityEffect(renderers, particles, duration));
     }
 
-    // Activa feedback de velocidad en un objeto
     public void ShowSpeedBoostFeedback(GameObject target, float duration)
     {
         Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
-
         if (renderers.Length > 0)
         {
             StartCoroutine(SpeedBoostEffect(renderers, duration));
         }
     }
 
-    // Activa feedback de daño
     public void ShowDamageFeedback(GameObject target)
     {
         Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
-
         if (renderers.Length > 0)
         {
             StartCoroutine(DamageEffect(renderers));
         }
     }
 
-    // Activa feedback de curación
     public void ShowHealFeedback(GameObject target)
     {
         Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
-
         if (renderers.Length > 0)
         {
             StartCoroutine(HealEffect(renderers));
         }
     }
 
-    // ---- EFECTOS VISUALES ----
+    // ===== EFECTOS VISUALES =====
 
     private IEnumerator InvincibilityEffect(Renderer[] renderers, ParticleSystem particles, float duration)
     {
-        List<Material> originalMaterials = new List<Material>();
-
-        foreach (Renderer rend in renderers)
+        // Guardar colores originales
+        Color[] originalColors = new Color[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
         {
-            originalMaterials.Add(rend.material);
-            rend.material = new Material(rend.material);
+            originalColors[i] = renderers[i].material.color;
         }
 
         float blinkSpeed = 0.15f;
         float elapsed = 0f;
 
-        if (particles != null)
-        {
-            particles.Play();
-            Debug.Log("Partículas activadas");
-        }
-
-        Debug.Log("Iniciando efecto de invencibilidad arcoíris");
+        if (particles != null) particles.Play();
 
         while (elapsed < duration)
         {
-            // Color arcoíris que cambia con el tiempo
-            float hue = (elapsed / duration) % 1f; 
-            Color rainbowColor = Color.HSVToRGB(hue, 1f, 2f); // Saturacion y brillo maximos
+            float hue = (elapsed / duration) % 1f;
+            Color rainbowColor = Color.HSVToRGB(hue, 1f, 2f);
 
-            // Activar color arcoíris
+            // Aplicar color arcoíris
             foreach (Renderer rend in renderers)
             {
                 rend.material.color = rainbowColor;
             }
             yield return new WaitForSeconds(blinkSpeed);
 
-            // Volver a color original
+            // Volver a original
             for (int i = 0; i < renderers.Length; i++)
             {
-                renderers[i].material.color = originalMaterials[i].color;
+                renderers[i].material.color = originalColors[i];
             }
             yield return new WaitForSeconds(blinkSpeed);
 
             elapsed += blinkSpeed * 2;
         }
 
-        if (particles != null)
-        {
-            particles.Stop();
-        }
+        if (particles != null) particles.Stop();
 
+        // Restaurar colores originales
         for (int i = 0; i < renderers.Length; i++)
         {
-            renderers[i].material = originalMaterials[i];
+            renderers[i].material.color = originalColors[i];
         }
-
-        Debug.Log("Efecto de invencibilidad finalizado");
     }
 
     private IEnumerator SpeedBoostEffect(Renderer[] renderers, float duration)
     {
-        List<Material> originalMaterials = new List<Material>();
-
-        foreach (Renderer rend in renderers)
+        Color[] originalColors = new Color[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
         {
-            originalMaterials.Add(rend.material);
-            rend.material = new Material(rend.material);
+            originalColors[i] = renderers[i].material.color;
         }
 
-        Color speedColor = new Color(0f, 1.5f, 2f, 1f); // Azul
+        Color speedColor = new Color(0f, 1.5f, 2f, 1f);
         float elapsed = 0f;
         float blinkSpeed = 0.2f;
 
@@ -174,65 +141,65 @@ public class VisualFeedbackManager : MonoBehaviour
 
             for (int i = 0; i < renderers.Length; i++)
             {
-                renderers[i].material.color = originalMaterials[i].color;
+                renderers[i].material.color = originalColors[i];
             }
             yield return new WaitForSeconds(blinkSpeed);
 
             elapsed += blinkSpeed * 2;
         }
 
+        // Restaurar
         for (int i = 0; i < renderers.Length; i++)
         {
-            renderers[i].material = originalMaterials[i];
+            renderers[i].material.color = originalColors[i];
         }
     }
 
     private IEnumerator DamageEffect(Renderer[] renderers)
     {
-        List<Material> originalMaterials = new List<Material>();
-
-        foreach (Renderer rend in renderers)
+        Color[] originalColors = new Color[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
         {
-            originalMaterials.Add(rend.material);
-            rend.material = new Material(rend.material);
+            originalColors[i] = renderers[i].material.color;
         }
 
-        Color damageColor = new Color(1f, 0f, 0f, 1f); // Rojo
+        Color damageColor = new Color(2f, 0f, 0f, 1f);
 
-        for (int i = 0; i < 3; i++)
+        for (int flash = 0; flash < 3; flash++)
         {
+            // Rojo
             foreach (Renderer rend in renderers)
             {
                 rend.material.color = damageColor;
             }
             yield return new WaitForSeconds(0.1f);
 
-            for (int j = 0; j < renderers.Length; j++)
+            // Original
+            for (int i = 0; i < renderers.Length; i++)
             {
-                renderers[j].material.color = originalMaterials[j].color;
+                renderers[i].material.color = originalColors[i];
             }
             yield return new WaitForSeconds(0.1f);
         }
 
+        // Asegurar restauración final
         for (int i = 0; i < renderers.Length; i++)
         {
-            renderers[i].material = originalMaterials[i];
+            renderers[i].material.color = originalColors[i];
         }
     }
 
     private IEnumerator HealEffect(Renderer[] renderers)
     {
-        List<Material> originalMaterials = new List<Material>();
-
-        foreach (Renderer rend in renderers)
+        Color[] originalColors = new Color[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
         {
-            originalMaterials.Add(rend.material);
-            rend.material = new Material(rend.material);
+            originalColors[i] = renderers[i].material.color;
         }
 
-        Color healColor = new Color(0f, 1f, 0f, 1f); // Verde
+        Color healColor = new Color(0f, 2f, 0f, 1f);
 
-        for (int i = 0; i < 2; i++)
+        for (int flash = 0; flash < 2; flash++)
         {
             foreach (Renderer rend in renderers)
             {
@@ -240,16 +207,17 @@ public class VisualFeedbackManager : MonoBehaviour
             }
             yield return new WaitForSeconds(0.15f);
 
-            for (int j = 0; j < renderers.Length; j++)
+            for (int i = 0; i < renderers.Length; i++)
             {
-                renderers[j].material.color = originalMaterials[j].color;
+                renderers[i].material.color = originalColors[i];
             }
             yield return new WaitForSeconds(0.15f);
         }
 
+        // Restaurar
         for (int i = 0; i < renderers.Length; i++)
         {
-            renderers[i].material = originalMaterials[i];
+            renderers[i].material.color = originalColors[i];
         }
     }
 }

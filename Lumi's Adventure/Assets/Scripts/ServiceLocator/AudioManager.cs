@@ -20,6 +20,7 @@ public class AudioManager : MonoBehaviour, IAudioService
     public AudioClip damageSound;
     public AudioClip victorySound;
     public AudioClip gameOverSound;
+    public AudioClip teleportSound;
 
     private Dictionary<string, AudioClip> soundLibrary; // accesos rapidos por nombre a los clips
 
@@ -71,7 +72,8 @@ public class AudioManager : MonoBehaviour, IAudioService
             { "Attack", attackSound },
             { "Damage", damageSound },
             { "Victory", victorySound },
-            { "GameOver", gameOverSound }
+            { "GameOver", gameOverSound },
+            { "Teleport", teleportSound }
         };
     }
 

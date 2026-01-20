@@ -236,6 +236,7 @@ MonoBehaviour:
   damageSound: {fileID: 8300000, guid: 765319706f522489e8eb96b46b57c3fb, type: 3}
   victorySound: {fileID: 8300000, guid: 0894525d1a16d4540932f5f5d9623f19, type: 3}
   gameOverSound: {fileID: 8300000, guid: 5249c120a7508410692ac55d3df6854b, type: 3}
+  teleportSound: {fileID: 8300000, guid: 7996c095bd1a94ee4baae86cb2f14527, type: 3}
 --- !u!4 &235311221
 Transform:
   m_ObjectHideFlags: 0

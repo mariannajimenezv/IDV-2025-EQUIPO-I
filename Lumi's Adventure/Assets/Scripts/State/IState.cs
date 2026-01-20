@@ -1,6 +1,5 @@
 /// <summary>
-/// Interfaz genérica para modelar un estado en
-/// el patrón State
+/// Generic interface for modelling a state in State pattern
 /// </summary>
 public interface IState
 {

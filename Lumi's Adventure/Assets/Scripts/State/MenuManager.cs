@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Context that manages the state machine.
+/// Delegates power into each state.
+/// </summary>
 public class MenuManager : MonoBehaviour, IMenu
 {
     public static MenuManager Instance { get; private set; }
@@ -47,8 +51,6 @@ public class MenuManager : MonoBehaviour, IMenu
     }
 
     // IMenu
-    public GameObject GetGameObject() => gameObject;
-
     public IState GetState() => currentState;
 
     public void SetState(IState newState)
@@ -88,9 +90,10 @@ public class MenuManager : MonoBehaviour, IMenu
     }
 
     // UI 
-    // Se delega la accion a los estados y GameManager actúa como
-    // contexto común para la gestion de botones
+    // Action is delegated to the states, GameManager acts as Common context for button management
     public void OnPlay() => currentState.OnPlay();
+    public void OnStartGame() => currentState.OnStartGame();
+    public void OnTutorial() => currentState.OnTutorial();
     public void OnBack() => currentState.OnBack();
     public void OnSettings() => currentState.OnSettings();
     public void OnCredits() => currentState.OnCredits();

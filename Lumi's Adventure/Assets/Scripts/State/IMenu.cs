@@ -1,15 +1,14 @@
 using UnityEngine;
 
 /// <summary>
-/// Define los métodos del contexto (MenuManager)
+/// Defines methods for context (MenuManager)
 /// </summary>
 public interface IMenu
 {
-    public GameObject GetGameObject();
-    // Getters y Setters
+    // Getters and Setters
     public void SetState(IState state);
     public IState GetState();
 
-    // Cada estado utiliza un panel (UI)
+    // Each state uses a panel from MenuManager
     public GameObject GetPanel(string panel);
 }

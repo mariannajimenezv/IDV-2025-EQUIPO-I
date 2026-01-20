@@ -58,6 +58,8 @@ public class GameManager : MonoBehaviour, ILumiObserver
 
     private void StartLevel()
     {
+
+        
         foreach (var point in fragSpawnPoints)
         {
             GameObject fragment = ServiceLocator

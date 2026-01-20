@@ -12,19 +12,19 @@ public class TutorialState : AMenuState
     public TutorialState(IMenu menu): base(menu)
     {
         this.menu = menu; 
-        panel = menu.GetPanel("CreditsMenuState");
+        panel = menu.GetPanel("TutorialState");
     }
 
     // State properties and transitions
     public override void Enter()
     {
-        Debug.Log("Entering Credits Menu");
+        Debug.Log("Entering Tutorial Menu");
         if (panel != null) panel.SetActive(true);
     }
 
     public override void Exit()
     {
-        Debug.Log("Exiting Credits Menu");
+        Debug.Log("Exiting Tutorial Menu");
         if (panel != null) panel.SetActive(false);
     }
 

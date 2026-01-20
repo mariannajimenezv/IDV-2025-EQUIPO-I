@@ -30,11 +30,7 @@ public class StartGameState : AMenuState
             .Where(c => c.name.Contains("Frame"))
             .Select(c => c.gameObject).ToList();
         frameCount = 0; 
-        if(frames != null)
-        {
-            frames[frameCount].SetActive(true);
-            Debug.Log("AAAA");
-        }    
+        frames?[frameCount].SetActive(true);    
     }
 
     public override void Exit()

@@ -39,7 +39,7 @@ public class StartGameState : AMenuState
 
     public override void Exit()
     {
-        // The State Machine "dies" here so its not neccesary to do anything here
+        // The State Machine "dies" here so its not neccesary to do anything
     }
 
     public override void Update()

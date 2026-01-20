@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 public class PauseState : AMenuState
 {
     private readonly GameObject panel;
+
+    // Constructor
     public PauseState(IMenu menu) : base(menu)
     {
         this.menu = menu;
@@ -37,6 +39,7 @@ public class PauseState : AMenuState
         
     }
 
+    // BUTTON METHODS USED IN PAUSE MENU //
     public override void OnBack()
     {
         Time.timeScale = 1; 

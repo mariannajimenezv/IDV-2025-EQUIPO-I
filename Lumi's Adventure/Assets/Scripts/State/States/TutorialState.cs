@@ -15,6 +15,7 @@ public class TutorialState : AMenuState
         panel = menu.GetPanel("CreditsMenuState");
     }
 
+    // State properties and transitions
     public override void Enter()
     {
         Debug.Log("Entering Credits Menu");

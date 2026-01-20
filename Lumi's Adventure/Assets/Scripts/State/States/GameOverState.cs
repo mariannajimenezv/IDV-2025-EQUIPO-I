@@ -5,25 +5,23 @@ public class GameOverState : AMenuState
 {
     private readonly GameObject panel;
 
+    // Constructor
     public GameOverState(IMenu menu): base(menu)
     {
         this.menu = menu; 
         panel = menu.GetPanel("GameOverState");
     }
 
+    // State properties and transitions
     public override void Enter()
     {
         if (panel != null) panel.SetActive(true);
         Time.timeScale = 0; 
-
-        // Opcional
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 
     public override void Exit()
     {
-        if (panel != null) panel.SetActive(false);
+        // The State Machine "dies" here so its not neccesary to do anything
     }
 
     public override void Update()
@@ -36,6 +34,7 @@ public class GameOverState : AMenuState
         
     }
 
+    // BUTTON METHODS USED IN GAME OVER MENU //
     public override void OnBack()
     {
         Time.timeScale = 1;

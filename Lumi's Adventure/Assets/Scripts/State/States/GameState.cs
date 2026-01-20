@@ -4,12 +4,14 @@ public class GameState : AMenuState
 {
     private readonly GameObject panel;
 
+    // Constructor
     public GameState(IMenu menu): base(menu)
     {
         this.menu = menu; 
         panel = menu.GetPanel("GameState");
     }
 
+    // State properties and transitions
     public override void Enter()
     {
         if (panel != null) panel.SetActive(true);

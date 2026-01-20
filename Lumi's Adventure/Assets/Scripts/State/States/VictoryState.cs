@@ -5,25 +5,23 @@ public class VictoryState : AMenuState
 {
     private readonly GameObject panel;
 
+    // Contructor
     public VictoryState(IMenu menu): base(menu)
     {
         this.menu = menu; 
         panel = menu.GetPanel("VictoryState");
     }
 
+    // State properties and transitions
     public override void Enter()
     {
         if (panel != null) panel.SetActive(true);
         Time.timeScale = 0; 
-
-        // Opcional
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 
     public override void Exit()
     {
-        if (panel != null) panel.SetActive(false);
+        // The State Machine "dies" here so its not neccesary to do anything
     }
 
     public override void Update()

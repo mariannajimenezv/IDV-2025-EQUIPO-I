@@ -60,12 +60,13 @@ public class GameManager : MonoBehaviour, ILumiObserver
     {
         foreach (var point in fragSpawnPoints)
         {
-            ServiceLocator
+            GameObject fragment = ServiceLocator
                 .Get<IItemFactory>()
                 .CreateItem("Fragment", point.position);
+
             ServiceLocator
                 .Get<IFragmentService>()
-                .RegisterFragment(point);
+                .RegisterFragment(fragment.transform);
         }
 
         foreach (var point in powerSpawnPoints)
@@ -73,7 +74,7 @@ public class GameManager : MonoBehaviour, ILumiObserver
             Debug.Log($"Spawning power-up with key: '{point.name}'");
             ServiceLocator
                 .Get<IItemFactory>()
-                .CreateItem(point.name, point.position);
+                .CreateItem(point.tag, point.position);
         }
     }
 

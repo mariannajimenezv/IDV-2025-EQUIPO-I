@@ -34,7 +34,7 @@ public class Collectible : MonoBehaviour
             {
                 if (objectType == Type.Fragment)
                 {
-                    lumi.CollectFragment();
+                    lumi.CollectFragment(gameObject.transform);
                     Destroy(gameObject);
                 }
                 else if (objectType == Type.Heart)

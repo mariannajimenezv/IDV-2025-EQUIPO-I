@@ -184,9 +184,11 @@ public class LumiController : MonoBehaviour
         ServiceLocator.Get<IAudioService>().PlaySound("Heart");
     }
 
-    public void CollectFragment()
+    public void CollectFragment(Transform fragment)
     {
         ServiceLocator.Get<IScoreService>().AddPoints();
+        ServiceLocator.Get<IFragmentService>().UnregisterFragment(fragment);
+        if(moonGuideLine != null) moonGuideLine.enabled = false;
         NotifyObservers("Fragment", ServiceLocator.Get<IScoreService>().CurrentScore);
 
         ServiceLocator.Get<IAudioService>().PlaySound("Fragment");

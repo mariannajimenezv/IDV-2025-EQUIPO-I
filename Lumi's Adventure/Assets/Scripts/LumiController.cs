@@ -130,20 +130,20 @@ public class LumiController : MonoBehaviour
     {
         Debug.Log("Lumi ejecuta ataque");
 
-        // 1. Activar Animaci�n
+        // 1. Activar Animacion
         if (anim != null)
         {
             anim.SetTrigger("Attack");
         }
 
-        // 2. L�gica de Da�o (Hitbox)
+        // 2. Logica de Damage (Hitbox)
         if (attackPoint != null)
         {
             Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
 
             foreach (Collider enemy in hitEnemies)
             {
-                // Evitamos que Lumi se golpee a s� misma
+                // Evitamos que Lumi se golpee a so misma
                 if (enemy.gameObject == gameObject) continue;
 
                 Debug.Log("Lumi golpea a: " + enemy.name);
@@ -155,7 +155,7 @@ public class LumiController : MonoBehaviour
         }
     }
 
-    // --- L�GICA DE JUEGO (DA�O, CURACI�N, POWERUPS) ---
+    // --- LOGICA DE JUEGO (DAMAGE, CURACION, POWERUPS) ---
 
     public void TakeDamage(int damage)
     {
@@ -164,14 +164,14 @@ public class LumiController : MonoBehaviour
         currentHealth -= damage;
         NotifyObservers("Life", currentHealth);
 
+        VisualFeedbackManager.Instance.ShowDamageFeedback(gameObject);    // Feedback visual (singleton)
+
         if (currentHealth <= 0)
         {
             GameManager.Instance.GameOver();
         }
 
-
         ServiceLocator.Get<IAudioService>().PlaySound("Damage");
-
     }
 
     public void Heal(int amount)
@@ -180,8 +180,8 @@ public class LumiController : MonoBehaviour
         if (currentHealth > maxHealth) currentHealth = maxHealth;
         NotifyObservers("Life", currentHealth);
 
+        VisualFeedbackManager.Instance.ShowHealFeedback(gameObject);    // Feedback visual (singleton)
         ServiceLocator.Get<IAudioService>().PlaySound("Heart");
-
     }
 
     public void CollectFragment()
@@ -190,7 +190,6 @@ public class LumiController : MonoBehaviour
         NotifyObservers("Fragment", ServiceLocator.Get<IScoreService>().CurrentScore);
 
         ServiceLocator.Get<IAudioService>().PlaySound("Fragment");
-
     }
 
     // --- POWER UPS ---
@@ -209,7 +208,6 @@ public class LumiController : MonoBehaviour
         }
         else if (type == "Sun")
         {
-            // Ejemplo: Aumentar velocidad temporalmente
             StartCoroutine(SpeedBoost(5f, 10f));
         }
     }
@@ -218,6 +216,9 @@ public class LumiController : MonoBehaviour
     {
         isInvincible = true;
         Debug.Log("�Lumi Invencible!");
+
+        VisualFeedbackManager.Instance.ShowInvincibilityFeedback(gameObject, duration);    // Feedback visual (singleton)
+
         yield return new WaitForSeconds(duration);
         isInvincible = false;
         Debug.Log("Fin Invencibilidad");
@@ -226,6 +227,9 @@ public class LumiController : MonoBehaviour
     public IEnumerator SpeedBoost(float duration, float boostedSpeed)
     {
         currentSpeed = boostedSpeed;
+
+        VisualFeedbackManager.Instance.ShowSpeedBoostFeedback(gameObject, duration);    // Feedback visual (singleton)
+
         yield return new WaitForSeconds(duration);
         currentSpeed = walkSpeed;
     }
@@ -260,7 +264,7 @@ public class LumiController : MonoBehaviour
     }
 
 
-    // --- PATR�N OBSERVER ---
+    // --- PATRON OBSERVER ---
 
     public void AddObserver(ILumiObserver observer)
     {

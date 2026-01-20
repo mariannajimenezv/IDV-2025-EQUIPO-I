@@ -16,6 +16,14 @@ public class GameManager : MonoBehaviour, ILumiObserver
     public Transform[] fragSpawnPoints;
     public Transform[] powerSpawnPoints;
 
+    [Header("Portal de Salida")]
+    public Renderer portalRenderer; // Renderer con el shader verde
+    public Collider portalCollider; // Collider del portal (opcional)
+    public Color portalActiveColor = new Color(0f, 1f, 0f, 1f); // Verde brillante
+    public Color portalInactiveColor = new Color(0f, 0f, 0f, 1f); // Negro (apagado)
+
+    private bool portalUnlocked = false;
+
     private void Awake()
     {
         if (Instance == null) Instance = this; //singleton
@@ -24,10 +32,13 @@ public class GameManager : MonoBehaviour, ILumiObserver
 
     private void Start()
     {
-        // inicio salida bloqueada
+        // Inicio salida bloqueada
         if (exitDoor != null) exitDoor.SetActive(false);
 
-        if(lumi != null)
+        // Apagar portal al inicio
+        SetPortalActive(false);
+
+        if (lumi != null)
         {
             lumi.AddObserver(this); // patron observer
         }
@@ -61,7 +72,6 @@ public class GameManager : MonoBehaviour, ILumiObserver
         }
     }
 
-
     private void OnDestroy()
     {
         if (lumi != null)
@@ -76,7 +86,7 @@ public class GameManager : MonoBehaviour, ILumiObserver
         Debug.Log($"[OBSERVER] Fragmentos: {currentFragments}/{totalFragments}");
 
         // logica de victoria
-        if (currentFragments >= totalFragments)
+        if (currentFragments >= totalFragments && !portalUnlocked)
         {
             UnlockExit();
         }
@@ -99,8 +109,54 @@ public class GameManager : MonoBehaviour, ILumiObserver
 
     void UnlockExit()
     {
-        Debug.Log("SALIDA DESBLOQUEADA!!");
+        portalUnlocked = true;
+        Debug.Log("¡SALIDA DESBLOQUEADA!");
+
         if (exitDoor != null) exitDoor.SetActive(true);
+
+        // ACTIVAR PORTAL (SHADER VERDE)
+        SetPortalActive(true);
+    }
+
+    // Controla el estado visual del portal
+    private void SetPortalActive(bool active)
+    {
+        if (portalRenderer != null)
+        {
+            // Cambiar color del shader
+            Color targetColor = active ? portalActiveColor : portalInactiveColor;
+
+            // Intenta primero con "_Color" (estándar)
+            if (portalRenderer.material.HasProperty("_Color"))
+            {
+                portalRenderer.material.SetColor("_Color", targetColor);
+            }
+            // Si tu shader usa "Color" directamente
+            else if (portalRenderer.material.HasProperty("Color"))
+            {
+                portalRenderer.material.SetColor("Color", targetColor);
+            }
+
+            Debug.Log($"Portal color cambiado a: {(active ? "Verde (activo)" : "Negro (inactivo)")}");
+        }
+
+        // Opcional: Activar/desactivar collider para evitar que entren antes de tiempo
+        if (portalCollider != null)
+        {
+            portalCollider.enabled = active;
+        }
+    }
+
+    // Llamar cuando el jugador entra al portal
+    public void OnPlayerEnterPortal()
+    {
+        if (!portalUnlocked)
+        {
+            Debug.Log("Portal bloqueado. Recoge todos los fragmentos primero.");
+            return;
+        }
+
+        WinLevel();
     }
 
     public void GameOver()

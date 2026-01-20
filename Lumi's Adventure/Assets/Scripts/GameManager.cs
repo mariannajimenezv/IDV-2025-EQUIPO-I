@@ -126,12 +126,10 @@ public class GameManager : MonoBehaviour, ILumiObserver
             // Cambiar color del shader
             Color targetColor = active ? portalActiveColor : portalInactiveColor;
 
-            // Intenta primero con "_Color" (estándar)
             if (portalRenderer.material.HasProperty("_Color"))
             {
                 portalRenderer.material.SetColor("_Color", targetColor);
             }
-            // Si tu shader usa "Color" directamente
             else if (portalRenderer.material.HasProperty("Color"))
             {
                 portalRenderer.material.SetColor("Color", targetColor);
@@ -140,7 +138,7 @@ public class GameManager : MonoBehaviour, ILumiObserver
             Debug.Log($"Portal color cambiado a: {(active ? "Verde (activo)" : "Negro (inactivo)")}");
         }
 
-        // Opcional: Activar/desactivar collider para evitar que entren antes de tiempo
+        // Activar/desactivar collider para evitar que entren antes de tiempo
         if (portalCollider != null)
         {
             portalCollider.enabled = active;

@@ -72,11 +72,10 @@ public class VisualFeedbackManager : MonoBehaviour
         }
     }
 
-    // ===== EFECTOS VISUALES =====
+    // ---- EFECTOS VISUALES ----
 
     private IEnumerator InvincibilityEffect(Renderer[] renderers, ParticleSystem particles, float duration)
     {
-        // Guardar colores originales
         Color[] originalColors = new Color[renderers.Length];
         for (int i = 0; i < renderers.Length; i++)
         {
@@ -93,14 +92,12 @@ public class VisualFeedbackManager : MonoBehaviour
             float hue = (elapsed / duration) % 1f;
             Color rainbowColor = Color.HSVToRGB(hue, 1f, 2f);
 
-            // Aplicar color arcoíris
             foreach (Renderer rend in renderers)
             {
                 rend.material.color = rainbowColor;
             }
             yield return new WaitForSeconds(blinkSpeed);
 
-            // Volver a original
             for (int i = 0; i < renderers.Length; i++)
             {
                 renderers[i].material.color = originalColors[i];
@@ -112,7 +109,6 @@ public class VisualFeedbackManager : MonoBehaviour
 
         if (particles != null) particles.Stop();
 
-        // Restaurar colores originales
         for (int i = 0; i < renderers.Length; i++)
         {
             renderers[i].material.color = originalColors[i];
@@ -148,7 +144,6 @@ public class VisualFeedbackManager : MonoBehaviour
             elapsed += blinkSpeed * 2;
         }
 
-        // Restaurar
         for (int i = 0; i < renderers.Length; i++)
         {
             renderers[i].material.color = originalColors[i];
@@ -167,14 +162,12 @@ public class VisualFeedbackManager : MonoBehaviour
 
         for (int flash = 0; flash < 3; flash++)
         {
-            // Rojo
             foreach (Renderer rend in renderers)
             {
                 rend.material.color = damageColor;
             }
             yield return new WaitForSeconds(0.1f);
 
-            // Original
             for (int i = 0; i < renderers.Length; i++)
             {
                 renderers[i].material.color = originalColors[i];
@@ -182,7 +175,6 @@ public class VisualFeedbackManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        // Asegurar restauración final
         for (int i = 0; i < renderers.Length; i++)
         {
             renderers[i].material.color = originalColors[i];
@@ -214,7 +206,6 @@ public class VisualFeedbackManager : MonoBehaviour
             yield return new WaitForSeconds(0.15f);
         }
 
-        // Restaurar
         for (int i = 0; i < renderers.Length; i++)
         {
             renderers[i].material.color = originalColors[i];

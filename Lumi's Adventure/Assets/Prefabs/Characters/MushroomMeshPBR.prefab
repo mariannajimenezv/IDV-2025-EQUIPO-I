@@ -208,7 +208,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!136 &6636452425757654097
 CapsuleCollider:
@@ -308,7 +308,7 @@ MonoBehaviour:
   isDead: 0
   deadTime: 0
   player: {fileID: 0}
-  agent: {fileID: 0}
+  agent: {fileID: 1885405208776377890}
   Ground:
     serializedVersion: 2
     m_Bits: 256
